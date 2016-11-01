@@ -1,0 +1,5 @@
+def reverse_str(string):
+    new_str = ''
+    for el in string[::-1]:
+        new_str += el
+    return new_str
