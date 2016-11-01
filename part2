@@ -1,5 +1,44 @@
-def reverse_str(string):
-    new_str = ''
-    for el in string[::-1]:
-        new_str += el
-    return new_str
+import requests
+import ast
+
+
+# Part 2
+print(requests.post('http://challenge.code2040.org/api/reverse/validate', json={'token':'02dab00e977796b8f6f692b0ede57003','string':requests.post('http://challenge.code2040.org/api/reverse', json={'token':'02dab00e977796b8f6f692b0ede57003'}).text[::-1]}).text)
+
+# Part 3
+d = ast.literal_eval(requests.post('http://challenge.code2040.org/api/haystack', json={'token':'02dab00e977796b8f6f692b0ede57003'}).text)
+n = d['needle']
+h = d['haystack']
+i = h.index(n)
+part_3 = requests.post('http://challenge.code2040.org/api/haystack/validate', json={'token':'02dab00e977796b8f6f692b0ede57003','needle':i})
+print(part_3.text)
+
+# Part 4
+d =  ast.literal_eval(requests.post('http://challenge.code2040.org/api/prefix', json={'token':'02dab00e977796b8f6f692b0ede57003'}).text)
+p = d['prefix']
+new_a = []
+for el in d['array']:
+    if el[:len(p)]!=p:
+        new_a.append(el)
+part_4 = requests.post('http://challenge.code2040.org/api/prefix/validate', json={'token':'02dab00e977796b8f6f692b0ede57003','array':new_a})
+print(part_4.text)
+
+
+# Part 5
+import datetime
+from datetime import timedelta
+
+Dict = ast.literal_eval(requests.post('http://challenge.code2040.org/api/dating', json={'token':'02dab00e977796b8f6f692b0ede57003'}).text)
+datestamp = Dict['datestamp']
+interval = Dict['interval']
+orig = datetime.datetime(year=int(datestamp[:4]),month=int(datestamp[5:7]),day=int(datestamp[8:10]),hour=int(datestamp[11:13]),minute=int(datestamp[14:16]),second=int(datestamp[17:19]))
+d = interval//(60*60*24)
+remainder = interval-d*60*60*24
+h = remainder//(60*60)
+remainder -= h*60*60
+m = remainder//60
+remainder -= m*60
+s = remainder
+time_change = datetime.timedelta(days=d, hours=h, minutes=m, seconds=s )
+a = requests.post('http://challenge.code2040.org/api/dating/validate', json={'token':'02dab00e977796b8f6f692b0ede57003','datestamp':str(orig+time_change)[:10]+'T'+str(orig+time_change)[11:]+'Z'})
+print(a.text)
